@@ -1,0 +1,41 @@
+.header {
+  height: 68px;
+  width: 100%;
+  border-bottom: 1px solid #f2f4f7;
+  padding: 24px 120px;
+  background: #f2f4f7;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navWrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;                     
+  gap: 960px;  
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.nav {
+  display: flex;
+  gap: 32px;                       
+}
+
+.navButton {
+ font-weight: 500;
+font-size: 16px;
+line-height: 1.25;
+text-align: center;
+color: #101828;
+text-decoration: none;
+}
+
+.navButton:hover {
+  color: #0b44cd;
+}

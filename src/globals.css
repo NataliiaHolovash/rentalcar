@@ -1,0 +1,20 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Manrope", sans-serif;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;  
+  margin: 0;
+}
+
