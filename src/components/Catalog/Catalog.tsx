@@ -1,9 +1,27 @@
 'use client';
 
+import Link from "next/link";
 import { useEffect } from "react";
 import Image from "next/image";
 import { useCarsStore } from "@/store/useCarsStore";
 import styles from "./Catalog.module.css";
+
+type Car = {
+  brand?: string;
+  id: string;
+  make?: string;            
+  model?: string;
+  year?: number;
+  rentalPrice?: string;
+  img?: string;
+  image?: string;
+  address?: string;
+  rentalCompany?: string;
+  company?: string;
+  type?: string;
+  mileage?: number;
+};
+
 
 export default function Catalog() {
   const { cars, isLoading, error, fetchCars, favorites, toggleFavorite } = useCarsStore();
@@ -12,40 +30,89 @@ export default function Catalog() {
     fetchCars();
   }, [fetchCars]);
 
-  if (isLoading) return <p className={styles.loading}>Loading cars...</p>;
-  if (error) return <p className={styles.error}>❌ {error}</p>;
+  if (isLoading) {
+     return (
+        <div className={styles.loaderContainer} >
+            <div className={styles.loader}></div>
+            <p>Loading cars...</p>
+        </div>
+     );
+  }
+   
+  if (error) {
+    return <p className={styles.error}>❌ {error}</p>;
+  } 
 
   return (
     <main className={styles.catalog}>
-      <h1 className={styles.title}>Car Catalog</h1>
       <div className={styles.grid}>
-        {cars.map((car) => (
-          <div key={car.id} className={styles.card}>
-            <Image
-              src={car.img}
-              alt={`${car.make} ${car.model}`}
-              width={300}
-              height={200}
-              className={styles.image}
-            />
-            <h2 className={styles.name}>
-              {car.make} {car.model}
-            </h2>
-            <p className={styles.details}>
-              {car.year} • {car.type}
-            </p>
-            <p className={styles.price}>{car.rentalPrice}</p>
-            <button
-              className={`${styles.favoriteBtn} ${
-                favorites.includes(car.id) ? styles.active : ""
-              }`}
-              onClick={() => toggleFavorite(car.id)}
-            >
-              ❤️
-            </button>
-          </div>
-        ))}
+        {cars.map((car: Car) => {
+            const brand = car.brand || "";
+            const model = car.model || "";
+            const year = car.year ?? "";
+            const price = car.rentalPrice || "—";
+            const company = car.rentalCompany || car.company || "";
+
+            const addressParts = car.address?.split(", ") || [];
+            const city = addressParts[addressParts.length - 2] || "";
+            const country = addressParts[addressParts.length - 1] || "";
+            const addressWithCompany = [city, country, company].filter(Boolean).join(" | ");
+
+          const typeText = car.type || "—";
+          const mileageText = car.mileage !== undefined ? `${car.mileage} km` : "km";
+          const typeMileage = [typeText, mileageText].join(" | ");
+          const imgSrc = car.img || car.image || "/images/placeholder-car.jpg";
+
+          return (
+            <article key={car.id} className={styles.card}>
+                 <div className={styles.imageWrap}>
+                <Image
+                  src={imgSrc}
+                  alt={`${brand} ${model}`}
+                  width={401}
+                  height={268}
+                  className={styles.image}
+                />
+                <button
+                  className={`${styles.favoriteBtn} ${favorites.includes(car.id) ? styles.active : ""}`}
+                  onClick={() => toggleFavorite(car.id)}
+                  aria-pressed={favorites.includes(car.id)}
+                  title="Toggle favorite"
+                >
+                  💙
+                </button>
+              </div>
+
+              <div className={styles.cardBody}>
+                <div className={styles.cardTitle}>
+                  <div className={styles.nameGroup}> 
+                  <span className={styles.brand}> {brand}</span>
+                  <span className={styles.model}> {model},</span>
+                  <span className={styles.year}> {year}</span>
+                  </div>
+                  <div className={styles.price}>${price}</div>
+                </div>
+
+                <div className={styles.rowFirst}>
+                  <p className={styles.address}>{addressWithCompany}</p>
+                </div>
+
+                <div className={styles.rowSecond}>
+                  <span className={styles.typeMileage}>{typeMileage}</span>
+                </div>
+
+                <div className={styles.actions}>
+                  <Link href={`/catalog/${car.id}`} className={styles.button}>
+                    Read more
+                  </Link>
+                </div>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </main>
   );
 }
+
+            

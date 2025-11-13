@@ -5,6 +5,11 @@ html, body {
   font-family: "Manrope", sans-serif;
   overflow-x: hidden;
   box-sizing: border-box;
+  background-color: #fff;
+}
+
+p, h2 {
+  margin: 0;
 }
 
 *, *::before, *::after {

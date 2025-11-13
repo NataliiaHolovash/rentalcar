@@ -14,8 +14,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
       </head>
       <body className="app">
-        <Header />    {/* Header завжди зверху */}
-        {children}    {/* Main підставляється з page.tsx */}
+        <Header />    
+        {children}    
       </body>
     </html>
   );
