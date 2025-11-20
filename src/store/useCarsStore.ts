@@ -1,62 +1,80 @@
-import { create } from "zustand";
+import {create}  from "zustand";
 import axios from "axios";
 
-interface Car {
+type Car = {
   id: string;
-  make: string;
-  model: string;
-  year: number;
-  type: string;
-  rentalPrice: string;
-  img: string;
+  brand?: string;
+  model?: string;
+  year?: number;
+  rentalPrice?: string;
+  img?: string;
+  address?: string;
+  rentalCompany?: string;
+  company?: string;
+  type?: string;
+  mileage?: number;
 }
 
-interface CarsState {
+type CarsStore = {
   cars: Car[];
-  favorites: string[];
+  page: number;
+  totalPages: number;
   isLoading: boolean;
   error: string | null;
-
-  fetchCars: () => Promise<void>;
+   favorites: string[];
   toggleFavorite: (id: string) => void;
-}
+  fetchCars: (next?: boolean) => Promise<void>;
+};
 
-export const useCarsStore = create<CarsState>((set, get) => ({
+export const useCarsStore = create<CarsStore>((set, get) => ({
   cars: [],
-  favorites: [],
+  page: 1,
+  totalPages: 1,
   isLoading: false,
   error: null,
+  favorites: [],
 
-  fetchCars: async () => {
-  set({ isLoading: true, error: null });
+  toggleFavorite: (id: string) => {
+    const current = get().favorites;
+    set({ favorites: current.includes(id) ? current.filter(f => f !== id) : [...current, id] });
+  },
 
-  try {
-    const { data } = await axios.get("https://car-rental-api.goit.global/cars");
+  fetchCars: async (next = false) => {
+    try {
+      set({ isLoading: true, error: null });
+      const limit = 12;
+      const page = next ? get().page + 1 : 1;
+      
 
-    if (Array.isArray(data.cars)) {
-      set({ cars: data.cars, isLoading: false });
-    } else {
-      console.error("Unexpected API format:", data);
-      set({ error: "Unexpected API format", isLoading: false });
-    }
-  } catch (err: unknown) {
-    if (axios.isAxiosError(err)) {
-      set({ error: err.message, isLoading: false });
-    } else if (err instanceof Error) {
-      set({ error: err.message, isLoading: false });
-    } else {
-      set({ error: "Failed to fetch cars", isLoading: false });
-    }
-  }
-},
+      const response = await axios.get(
+        'https://car-rental-api.goit.global/cars', 
+        { params: { page, limit } }
+       );
+
+      const data = response.data; 
+
+       console.log("API data:", data);
 
 
-  toggleFavorite: (id) => {
-    const { favorites } = get();
-    if (favorites.includes(id)) {
-      set({ favorites: favorites.filter((fav) => fav !== id) });
-    } else {
-      set({ favorites: [...favorites, id] });
-    }
+      if (!data || !Array.isArray(data.cars)) {
+        set({ error: "Unexpected API format" });
+        return;
+      }
+
+      const totalPages = Math.ceil(data.totalCars / limit);
+
+      set({
+        cars: next ? [...get().cars, ...data.cars] : data.cars,
+        page: Number(data.page),
+        totalPages,
+      });
+    } catch (err) {
+      set({
+        error: err instanceof Error ? err.message : "Error fetching cars",
+      });
+    } finally {
+      set({ isLoading: false });
+
+}
   },
 }));

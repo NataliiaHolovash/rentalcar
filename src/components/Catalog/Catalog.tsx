@@ -6,6 +6,8 @@ import Image from "next/image";
 import { useCarsStore } from "@/store/useCarsStore";
 import styles from "./Catalog.module.css";
 
+
+
 type Car = {
   brand?: string;
   id: string;
@@ -14,7 +16,6 @@ type Car = {
   year?: number;
   rentalPrice?: string;
   img?: string;
-  image?: string;
   address?: string;
   rentalCompany?: string;
   company?: string;
@@ -24,24 +25,16 @@ type Car = {
 
 
 export default function Catalog() {
-  const { cars, isLoading, error, fetchCars, favorites, toggleFavorite } = useCarsStore();
+  const { cars, isLoading, error, fetchCars, favorites, toggleFavorite, page, totalPages } = useCarsStore();
 
   useEffect(() => {
-    fetchCars();
-  }, [fetchCars]);
+    fetchCars(false);
+  }, []);
 
-  if (isLoading) {
-     return (
-        <div className={styles.loaderContainer} >
-            <div className={styles.loader}></div>
-            <p>Loading cars...</p>
-        </div>
-     );
-  }
-   
-  if (error) {
-    return <p className={styles.error}>❌ {error}</p>;
-  } 
+  const handleLoadMore = () => {
+    fetchCars(true); 
+  };
+
 
   return (
     <main className={styles.catalog}>
@@ -61,7 +54,7 @@ export default function Catalog() {
           const typeText = car.type || "—";
           const mileageText = car.mileage !== undefined ? `${car.mileage} km` : "km";
           const typeMileage = [typeText, mileageText].join(" | ");
-          const imgSrc = car.img || car.image || "/images/placeholder-car.jpg";
+          const imgSrc = car.img || "/images/placeholder-car.jpg";
 
           return (
             <article key={car.id} className={styles.card}>
@@ -111,6 +104,19 @@ export default function Catalog() {
           );
         })}
       </div>
+
+      {error && <p className={styles.error}>{error}</p>}
+
+      {!isLoading && page < totalPages && (
+        <div className={styles.loadMoreContainer}>
+          <button className={styles.loadMoreBtn} onClick={handleLoadMore}>
+            Load more
+          </button>
+        </div>
+      )}
+
+      {isLoading && <p className={styles.loader}>Loading...</p>}
+ 
     </main>
   );
 }

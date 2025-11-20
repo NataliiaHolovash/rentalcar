@@ -128,5 +128,36 @@ font-size: 16px;
 line-height: 1.25;
 color: #fff;
 text-decoration: none;
-
 }
+
+.button:hover {
+  background-color: #0b44cd;
+}
+
+.loadMoreContainer {
+  margin-top: 80px;
+  margin-bottom: 124px;
+  margin-left: 522px;
+}
+
+.loadMoreBtn {
+   display: inline-block;     
+  white-space: nowrap;
+  border: 1px solid #3470ff;
+border-radius: 12px;
+background-color: #fff;
+width: 156px;
+height: 44px;
+font-family: "Manrope", sans-serif;
+font-weight: 600;
+font-size: 16px;
+line-height: 1.25;
+color: #101828;
+ text-align: center;
+ cursor: pointer;
+}
+
+.loadMoreBtn:hover {
+  border-color: #0b44cd;
+}
+
