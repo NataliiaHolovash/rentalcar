@@ -14,3 +14,4 @@ export const fetchCars = async (page = 1, limit = 12) => {
     return [];
   }
 };
+

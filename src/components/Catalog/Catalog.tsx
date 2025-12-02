@@ -1,6 +1,5 @@
 'use client';
 
-import Link from "next/link";
 import { useEffect } from "react";
 import Image from "next/image";
 import { useCarsStore } from "@/store/useCarsStore";
@@ -40,6 +39,7 @@ export default function Catalog() {
     <main className={styles.catalog}>
       <div className={styles.grid}>
         {cars.map((car: Car) => {
+          
             const brand = car.brand || "";
             const model = car.model || "";
             const year = car.year ?? "";
@@ -95,11 +95,12 @@ export default function Catalog() {
                 </div>
 
                 <div className={styles.actions}>
-                  <Link href={`/catalog/${car.id}`} className={styles.button}>
-                    Read more
-                  </Link>
+                  <button className={styles.button} disabled>
+                  Read more
+                  </button>
                 </div>
               </div>
+               
             </article>
           );
         })}
